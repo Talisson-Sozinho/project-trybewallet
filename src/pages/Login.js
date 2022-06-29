@@ -1,4 +1,7 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { saveUser as saveUserAction } from '../actions';
 
 const MIN_LENGTH_PASSWORD = 6;
 const EMAIL_REGEX = /^[\w+.]+@\w+\.\w{2,}(?:\.\w{2})?$/;
@@ -8,10 +11,12 @@ class Login extends React.Component {
     this.state = {
       emailInputValue: '',
       passwordInputValue: '',
+      emailForSubmit: '',
       emailIsValid: false,
       passwordIsValid: false,
     };
     this.onChangeInputValue = this.onChangeInputValue.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
   }
 
   onChangeInputValue({ target }) {
@@ -22,6 +27,10 @@ class Login extends React.Component {
 
   onSubmit(event) {
     event.preventDefault();
+    const { history, saveUser } = this.props;
+    const { emailForSubmit } = this.state;
+    saveUser(emailForSubmit);
+    history.push('/carteira');
   }
 
   validateInput() {
@@ -33,9 +42,9 @@ class Login extends React.Component {
       this.setState({ passwordIsValid: false });
     }
     if (EMAIL_REGEX.test(emailInputValue)) {
-      this.setState({ emailIsValid: true });
+      this.setState({ emailIsValid: true, emailForSubmit: emailInputValue });
     } else {
-      this.setState({ passwordIsValid: false });
+      this.setState({ emailIsValid: false, emailForSubmit: '' });
     }
   }
 
@@ -57,7 +66,7 @@ class Login extends React.Component {
           value={ emailInputValue }
         />
         <input
-          data-testid="email-input"
+          data-testid="password-input"
           name="passwordInputValue"
           type="password"
           onChange={ this.onChangeInputValue }
@@ -74,4 +83,17 @@ class Login extends React.Component {
   }
 }
 
-export default Login;
+Login.propTypes = {
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }).isRequired,
+  saveUser: PropTypes.func.isRequired,
+};
+
+const mapDispatchToProps = (dispatch) => ({
+  saveUser: (email) => {
+    dispatch(saveUserAction(email));
+  },
+});
+
+export default connect(null, mapDispatchToProps)(Login);
