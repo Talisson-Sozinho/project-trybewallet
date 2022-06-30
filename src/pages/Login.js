@@ -83,13 +83,6 @@ class Login extends React.Component {
   }
 }
 
-Login.propTypes = {
-  history: PropTypes.shape({
-    push: PropTypes.func.isRequired,
-  }).isRequired,
-  saveUser: PropTypes.func.isRequired,
-};
-
 const mapDispatchToProps = (dispatch) => ({
   saveUser: (email) => {
     dispatch(saveUserAction(email));
@@ -97,3 +90,10 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 export default connect(null, mapDispatchToProps)(Login);
+
+Login.propTypes = {
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }).isRequired,
+  saveUser: PropTypes.func.isRequired,
+};
