@@ -146,17 +146,13 @@ class WalletForm extends React.Component {
   }
 }
 
-const mapStateToProps = ({ wallet: { currencies } }) => ({
-  currencies,
-});
-
 const mapDispatchToProps = (dispatch) => ({
   saveExpense: (objOfExpense) => {
     dispatch(saveExpenseAction(objOfExpense));
   },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(WalletForm);
+export default connect(null, mapDispatchToProps)(WalletForm);
 
 WalletForm.propTypes = {
   currencies: PropTypes.arrayOf(PropTypes.string).isRequired,

@@ -13,23 +13,29 @@ class Wallet extends React.Component {
   }
 
   render() {
+    const { currencies } = this.props;
     return (
       <>
         <Header />
         <h1>Wallet</h1>
-        <WalletForm />
+        <WalletForm currencies={ currencies } />
         <Table />
       </>
     );
   }
 }
 
+const mapStateToProps = ({ wallet: { currencies } }) => ({
+  currencies,
+});
+
 const mapDispatchToProps = (dispatch) => ({
   fetchCurrencies: () => dispatch(getCurrencies()),
 });
 
-export default connect(null, mapDispatchToProps)(Wallet);
+export default connect(mapStateToProps, mapDispatchToProps)(Wallet);
 
 Wallet.propTypes = {
   fetchCurrencies: PropTypes.func.isRequired,
+  currencies: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
