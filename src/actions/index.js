@@ -20,3 +20,22 @@ export const getCurrencies = () => async (dispatch) => {
     console.error(e);
   }
 };
+
+export const SAVE_NEW_EXPENSE = 'SAVE_NEW_EXPENSE';
+
+export const saveExpense = (newExpense) => async (dispatch) => {
+  try {
+    const response = await fetch('https://economia.awesomeapi.com.br/json/all');
+    const currencies = await response.json();
+    const currenciesProcessed = currencies;
+    dispatch({
+      type: SAVE_NEW_EXPENSE,
+      payload: {
+        ...newExpense,
+        exchangeRates: currenciesProcessed,
+      },
+    });
+  } catch (e) {
+    console.error(e);
+  }
+};

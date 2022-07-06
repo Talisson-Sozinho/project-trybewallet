@@ -5,7 +5,9 @@ import { connect } from 'react-redux';
 class Header extends React.Component {
   calculateExpenses = () => {
     const { expenses } = this.props;
-    return expenses.reduce((acc, expense) => acc + expense.value, 0);
+    return expenses.reduce((acc, { value, currency, exchangeRates }) => (
+      acc + +value * +exchangeRates[currency].ask
+    ), 0).toFixed(2);
   }
 
   render() {
@@ -30,12 +32,12 @@ export default connect(mapStateToProps)(Header);
 Header.propTypes = {
   email: PropTypes.string.isRequired,
   expenses: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.string,
-    value: PropTypes.number,
+    id: PropTypes.number,
+    value: PropTypes.string,
     currency: PropTypes.string,
     method: PropTypes.string,
     tag: PropTypes.string,
     description: PropTypes.string,
-    exchangeRates: PropTypes.string,
+    exchangeRates: PropTypes.objectOf(PropTypes.object),
   })).isRequired,
 };
