@@ -1,4 +1,8 @@
-import { GET_CURRENCIES_FOR_GLOBAL_STATE, SAVE_NEW_EXPENSE } from '../actions';
+import {
+  DELETE_EXPENSE,
+  GET_CURRENCIES_FOR_GLOBAL_STATE,
+  SAVE_NEW_EXPENSE,
+} from '../actions';
 
 const INITIAL_STATE = {
   currencies: [],
@@ -26,6 +30,11 @@ const walletReducer = (state = INITIAL_STATE, action) => {
         },
       ],
       currentID: state.currentID + 1,
+    };
+  case DELETE_EXPENSE:
+    return {
+      ...state,
+      expenses: state.expenses.filter(({ id }) => id !== action.payload),
     };
   default:
     return state;

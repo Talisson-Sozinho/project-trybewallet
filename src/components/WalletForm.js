@@ -12,7 +12,7 @@ class WalletForm extends React.Component {
     this.state = {
       valueInput: '',
       descriptionInput: '',
-      currencyInput: props.currencies[0],
+      currencyInput: 'USD',
       methodInput: availablePaymentMethods[0],
       tagInput: availableTags[0],
     };
