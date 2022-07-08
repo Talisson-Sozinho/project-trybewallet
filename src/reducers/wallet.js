@@ -1,6 +1,8 @@
 import {
   DELETE_EXPENSE,
+  EDIT_EXPENSE,
   GET_CURRENCIES_FOR_GLOBAL_STATE,
+  SAVE_EDITED_EXPENSE,
   SAVE_NEW_EXPENSE,
 } from '../actions';
 
@@ -35,6 +37,26 @@ const walletReducer = (state = INITIAL_STATE, action) => {
     return {
       ...state,
       expenses: state.expenses.filter(({ id }) => id !== action.payload),
+    };
+  case EDIT_EXPENSE:
+    return {
+      ...state,
+      editor: true,
+      idToEdit: action.payload,
+    };
+  case SAVE_EDITED_EXPENSE:
+    return {
+      ...state,
+      editor: false,
+      expenses: state.expenses.map((currentExpense) => {
+        if (currentExpense.id === action.payload.id) {
+          return {
+            ...currentExpense,
+            ...action.payload,
+          };
+        }
+        return currentExpense;
+      }),
     };
   default:
     return state;

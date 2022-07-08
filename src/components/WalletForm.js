@@ -1,7 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { saveExpense as saveExpenseAction } from '../actions';
+import { saveEditedExpense as saveEditedExpenseAction,
+  saveExpense as saveExpenseAction,
+} from '../actions';
 
 const availablePaymentMethods = ['Dinheiro', 'Cartão de crédito', 'Cartão de débito'];
 const availableTags = ['Alimentação', 'Lazer', 'Trabalho', 'Transporte', 'Saúde'];
@@ -28,20 +30,32 @@ class WalletForm extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    const { saveExpense, currencies } = this.props;
+    const { saveExpense, currencies, editor, saveEditedExpense, idToEdit } = this.props;
     const {
       valueInput,
       descriptionInput,
       currencyInput,
       methodInput,
       tagInput } = this.state;
-    saveExpense({
-      value: valueInput,
-      description: descriptionInput,
-      currency: currencyInput,
-      method: methodInput,
-      tag: tagInput,
-    });
+
+    if (editor) {
+      saveEditedExpense({
+        id: idToEdit,
+        value: valueInput,
+        description: descriptionInput,
+        currency: currencyInput,
+        method: methodInput,
+        tag: tagInput,
+      });
+    } else {
+      saveExpense({
+        value: valueInput,
+        description: descriptionInput,
+        currency: currencyInput,
+        method: methodInput,
+        tag: tagInput,
+      });
+    }
     this.setState({
       valueInput: '',
       descriptionInput: '',
@@ -52,7 +66,7 @@ class WalletForm extends React.Component {
   }
 
   render() {
-    const { currencies } = this.props;
+    const { currencies, editor } = this.props;
     const {
       valueInput,
       descriptionInput,
@@ -139,22 +153,38 @@ class WalletForm extends React.Component {
           </select>
         </label>
 
-        <button type="submit">Adicionar despesa</button>
+        <button type="submit">{ editor ? 'Editar despesa' : 'Adicionar despesa'}</button>
 
       </form>
     );
   }
 }
 
+const mapStateToProps = ({ wallet: { editor, idToEdit } }) => ({
+  editor,
+  idToEdit,
+});
+
 const mapDispatchToProps = (dispatch) => ({
   saveExpense: (objOfExpense) => {
     dispatch(saveExpenseAction(objOfExpense));
   },
+  saveEditedExpense: (objOfExpense) => {
+    dispatch(saveEditedExpenseAction(objOfExpense));
+  },
 });
 
-export default connect(null, mapDispatchToProps)(WalletForm);
+export default connect(mapStateToProps, mapDispatchToProps)(WalletForm);
 
 WalletForm.propTypes = {
   currencies: PropTypes.arrayOf(PropTypes.string).isRequired,
+  saveEditedExpense: PropTypes.func.isRequired,
   saveExpense: PropTypes.func.isRequired,
+  editor: PropTypes.bool,
+  idToEdit: PropTypes.number,
+};
+
+WalletForm.defaultProps = {
+  editor: false,
+  idToEdit: 0,
 };
